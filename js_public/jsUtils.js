@@ -760,3 +760,24 @@ var __pageTools = {
 	}
 	
 };
+
+var jsonTools={
+   dump:function(jsObject){
+     if (typeof jsObject!="object"){
+		 return "'"+jsObject+"'";
+	 }else if (jsObject instanceof Array){
+		 return " [ '"+jsObject.join("','")+" ']";
+	 }
+	 var jsonSection="{ ";
+     for(var item in jsObject){
+		if (typeof jsObject[item]=="function")
+			continue;
+		else 
+		  jsonSection=jsonSection+"\'"+item+"':";
+		  var destObj=jsObject[item]
+	      jsonSection=jsonSection+arguments.callee(destObj)+","
+	 }
+	 jsonSection=jsonSection.replace(/,$/,"")+"}";
+	 return jsonSection;
+   }
+}
