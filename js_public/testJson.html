@@ -5,6 +5,8 @@
  
  function searchSegement(jsonSegement) {
 		jsonSegement = jsonSegement.replace(/^\s+|\s+$/, "");
+	    if(!/^"|'|\{|\[/.test(jsonSegement))
+			return jsonSegement.replace(/^([^\{\[,]+).*$/,"$1");
 		var blockStack = [];
 		var curPoint = "";
 		blockStack.push(jsonSegement.replace(/^(.).*$/,"$1"));
@@ -50,6 +52,14 @@ function clickJsonButton(){
 
 	jsonString="'hello',leadfad";
 
+	console.info(searchSegement(jsonString));
+	
+	jsonString="'lleaf'}"
+	
+	console.info(searchSegement(jsonString));
+	
+	jsonString="20,}";
+	
 	console.info(searchSegement(jsonString));
 }
 

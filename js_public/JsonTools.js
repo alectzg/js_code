@@ -37,22 +37,24 @@ var jsonTools={
 		 while(segement.length>0){
 			var tokSeg=_this.searchSegement(segement);
 			retObject.push(argument.callee(tokSeg,_this));
-			segement=segement.substring(tokSeg.length-1).replace(/^\s*,/,"").replace(/\s+|\s+$/,"").replace(/^,/,"");
+			segement=segement.substring(tokSeg.length-1).replace(/^\s*,/,"").replace(/\s+|\s+$/g,"").replace(/^,/,"");
 		 }
 		 return retObject;
 	  }else
 	  {
 		if(jsonString.indexOf("'")==0){
-		  return jsonString.replace(/^'|'$/,"");
+		  return jsonString.replace(/^'|'$/g,"");
 		} 
 		if(jsonString.indexOf('"')==0){
-		  return jsonString.replace(/^"|"$/,"");
+		  return jsonString.replace(/^"|"$/g,"");
 		}
 		return jsonString;
 	  }
 	},
 	searchSegement:function(jsonSegement){
 	  jsonSegement = jsonSegement.replace(/^\s+|\s+$/, "");
+	    if(!/^"|'|\{|\[/.test(jsonSegement))
+			return jsonSegement.replace(/^([^\{\[,]+).*$/,"$1");
 		var blockStack = [];
 		var curPoint = "";
 		blockStack.push(jsonSegement.replace(/^(.).*$/,"$1"));
