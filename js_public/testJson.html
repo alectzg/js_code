@@ -1,0 +1,72 @@
+ <script type="text/javascript" src="JsonTools.js" >
+</script>
+
+ <script type="text/javascript">
+ 
+ function searchSegement(jsonSegement) {
+		jsonSegement = jsonSegement.replace(/^\s+|\s+$/, "");
+		var blockStack = [];
+		var curPoint = "";
+		blockStack.push(jsonSegement.replace(/^(.).*$/,"$1"));
+		curPoint = blockStack[0];
+		jsonSegement = jsonSegement.replace(/^./, "");
+		var findSegement = [curPoint];
+		var tmpSegement = "";
+		var tempTokenizer = "";
+		while (blockStack.length > 0) {
+			tmpSegement = jsonSegement.replace(/^([^\'\"\{\[\]\}]+).*$/g, "$1");
+			findSegement.push(tmpSegement);
+			jsonSegement = jsonSegement.replace(/^[^\'\"\{\[\]\}]+/g, "").replace(/^\s+/, "");
+			tempTokenizer = jsonSegement.replace(/^(.).*$/,"$1");
+            findSegement.push(tempTokenizer);
+			jsonSegement=jsonSegement.replace(/^./,"");
+		
+			//console.info(tempTokenizer+" >> "+curPoint);
+			//console.info("jsonSegement:"+jsonSegement);
+			//debugger
+			if ((tempTokenizer == "\"" && curPoint == "\"") || ( tempTokenizer == "}" && curPoint == "{") || (tempTokenizer == "]" && curPoint == "[") || (tempTokenizer == "'" && curPoint == "'")) {
+				blockStack.pop();
+			//	console.info("pop stack")
+			} else {
+				blockStack.push(tempTokenizer);
+			}
+			if (blockStack.length > 0)
+				curPoint = blockStack[blockStack.length - 1];
+		}
+		return findSegement.join("");
+	}
+
+function clickJsonButton(){
+	var jsonSegement="{ a: 'hello' },[123,45,67,78]";
+
+	console.info(searchSegement(jsonSegement));
+
+	"a: 'hello' },[123,45,67,78] ".replace(/^([^\'\"\{\[]+).*$/g, "$1");
+
+	"a: 'hello' },[123,45,67,78] " .replace(/^[^\'\"\{\[\]\}]+/g, "");
+
+	jsonSegement="[123,45,67,78]";
+	console.info(searchSegement(jsonSegement));
+
+	jsonString="'hello',leadfad";
+
+	console.info(searchSegement(jsonString));
+}
+
+function clickParseJson(){
+   var jsonString=document.getElementById("textJSON").value;
+   var jsObject=jsonTools.parse(jsonString);
+   console.info(jsObject);
+}
+</script>
+
+
+
+<form width="100%">
+  <div>
+  <textarea id="textJSON" style="width:100%" rows=4 >
+  </textarea>
+  <div>
+  <input type="button" value="jsTools.testJson" onclick="clickParseJson();" />
+  <input type="button" id="clickBtn" value="testJson" onclick="clickJsonButton()" />
+</form>
