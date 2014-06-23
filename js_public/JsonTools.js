@@ -1,4 +1,4 @@
-/**
+﻿/**
    JSON分析解析（未详测）
 **/
 var jsonTools={
@@ -19,7 +19,7 @@ var jsonTools={
 			 jsonString=jsonString.replace(/^./,"")
 			 key=jsonString.replace(/^([^:]+:).*$/,"$1");
 			 key=key.replace(/:/,"").replace(/^\s*|\s*$/g,"").replace(/^'|'$/g,"").replace(/^"|"$/g,"");
-			 debugger
+			 //debugger
 			 jsonString=jsonString.replace(/^[^:]+:(.*)$/g,"$1").replace(/^\s+|\s+$/g,"");
 			 var segement=_this.searchSegement(jsonString);
 			 jsonString=jsonString.substring(segement.length);
@@ -32,7 +32,7 @@ var jsonTools={
 		 }
 		 return retObject;
 	  }else if(/\[/.test(jsonString)&&!/\\\[/.test(jsonString)){
-		 debugger
+		 //debugger
 		 retObject=[];
 		 segement=jsonString.replace(/^\[|\]$/g,"");
 		 while(segement.length>0){
@@ -84,7 +84,7 @@ var jsonTools={
 		
 			//console.info(tempTokenizer+" >> "+curPoint);
 			//console.info("jsonSegement:"+jsonSegement);
-			//debugger
+			////debugger
 			if ((tempTokenizer == "\"" && curPoint == "\"") || ( tempTokenizer == "}" && curPoint == "{") || (tempTokenizer == "]" && curPoint == "[") || (tempTokenizer == "'" && curPoint == "'")) {
 				blockStack.pop();
 			//	console.info("pop stack")
