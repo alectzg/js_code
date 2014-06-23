@@ -1,5 +1,5 @@
 /**
-  ’‚∏ˆ∑÷Œˆ ˜”–Œ Ã‚°£°£
+   JSONÂàÜÊûêËß£ÊûêÔºàÊú™ËØ¶ÊµãÔºâ
 **/
 var jsonTools={
     parse:function(jsonString,context){
@@ -23,7 +23,7 @@ var jsonTools={
 			 jsonString=jsonString.replace(/^[^:]+:(.*)$/g,"$1").replace(/^\s+|\s+$/g,"");
 			 var segement=_this.searchSegement(jsonString);
 			 jsonString=jsonString.substring(segement.length);
-			 retObject[key]=arguments.callee(segement);
+			 retObject[key]=arguments.callee(segement,_this);
 			 if(jsonString.replace(/^\s+|\s+$/g,"").replace(/^,/,"").replace(/^(.).*$/,"$1")=="}"){
 			    blockStack.pop();
 				break;
@@ -32,12 +32,13 @@ var jsonTools={
 		 }
 		 return retObject;
 	  }else if(/\[/.test(jsonString)&&!/\\\[/.test(jsonString)){
+		 debugger
 		 retObject=[];
-		 segement=jsonString.replace(/^\[|\]$/,"");
+		 segement=jsonString.replace(/^\[|\]$/g,"");
 		 while(segement.length>0){
 			var tokSeg=_this.searchSegement(segement);
-			retObject.push(argument.callee(tokSeg,_this));
-			segement=segement.substring(tokSeg.length-1).replace(/^\s*,/,"").replace(/\s+|\s+$/g,"").replace(/^,/,"");
+			retObject.push(arguments.callee(tokSeg,_this));
+			segement=segement.substring(tokSeg.length).replace(/^\s*,/,"").replace(/\s+|\s+$/g,"").replace(/^,/,"");
 		 }
 		 return retObject;
 	  }else
@@ -53,7 +54,7 @@ var jsonTools={
 	},
 	searchSegement:function(jsonSegement){
 	  jsonSegement = jsonSegement.replace(/^\s+|\s+$/, "");
-	    if(!/^"|'|\{|\[/.test(jsonSegement))
+	    if(!/^("|'|\{|\[)/.test(jsonSegement))
 			return jsonSegement.replace(/^([^\{\[,]+).*$/,"$1");
 		var blockStack = [];
 		var curPoint = "";
@@ -64,11 +65,21 @@ var jsonTools={
 		var tmpSegement = "";
 		var tempTokenizer = "";
 		while (blockStack.length > 0) {
-			tmpSegement = jsonSegement.replace(/^([^\'\"\{\[\]\}]+).*$/g, "$1");
-			findSegement.push(tmpSegement);
-			jsonSegement = jsonSegement.replace(/^[^\'\"\{\[\]\}]+/g, "").replace(/^\s+/, "");
-			tempTokenizer = jsonSegement.replace(/^(.).*$/,"$1");
-            findSegement.push(tempTokenizer);
+		    jsonSegement=jsonSegement.replace(/^\s+|\s+$/g,"");
+			if(/^("|'|\}|\])/.test(jsonSegement)){
+			  tempTokenizer=jsonSegement.replace(/^(.).*$/,"$1");
+			}else if(/^,/.test(jsonSegement)){
+			  tempTokenizer=jsonSegement.replace(/^(.).*$/,"$1");
+			  jsonSegement=jsonSegement.replace(/^./,"");
+			  findSegement.push(tempTokenizer);
+			  continue;
+			}else{
+				tmpSegement = jsonSegement.replace(/^([^\'\"\{\[\]\}]+).*$/g, "$1");
+				findSegement.push(tmpSegement);
+				jsonSegement = jsonSegement.replace(/^[^\'\"\{\[\]\}]+/g, "").replace(/^\s+/, "");
+				tempTokenizer = jsonSegement.replace(/^(.).*$/,"$1");	
+			}
+			findSegement.push(tempTokenizer);
 			jsonSegement=jsonSegement.replace(/^./,"");
 		
 			//console.info(tempTokenizer+" >> "+curPoint);
@@ -84,5 +95,84 @@ var jsonTools={
 				curPoint = blockStack[blockStack.length - 1];
 		}
 		return findSegement.join("");
+	},
+	//Â∞Üjs object ËΩ¨ÂåñÊàêjsonÂ≠ó‰∏≤!
+	 dump:function(jsObject){
+		 if (typeof jsObject!="object"){
+			 return "'"+jsObject+"'";
+		 }else if (jsObject instanceof Array){
+			 return " [ '"+jsObject.join("','")+" ']";
+		 }
+		 var jsonSection="{ ";
+		 for(var item in jsObject){
+			if (typeof jsObject[item]=="function")
+				continue;
+			else 
+			  jsonSection=jsonSection+"\'"+item+"':";
+			  var destObj=jsObject[item]
+			  jsonSection=jsonSection+arguments.callee(destObj)+","
+		 }
+		 jsonSection=jsonSection.replace(/,$/,"")+"}";
+		 return jsonSection;
+   },
+   //ÂèÇÁÖßjqueryÂÜÖÈÉ®Ëß£Êûêjson
+	parse_reference:function( data ) {
+
+		if ( typeof data !== "string" || !data ) {
+
+			return null;
+
+		}
+
+
+
+		// Make sure leading/trailing whitespace is removed (IE can't handle it)
+
+		data = jsPublic.trim( data );
+
+		
+
+		// Make sure the incoming data is actual JSON
+
+		// Logic borrowed from http://json.org/json2.js
+
+		if ( /^[\],:{}\s]*$/.test(data.replace(/\\(?:["\\\/bfnrt]|u[\da-fA-F]{4})/g, "@")
+
+			.replace(/"[^"\\\r\n]*"|true|false|null|-?(?:\d\d*\.|)\d+(?:[eE][\-+]?\d+|)/g, "]")
+
+			.replace(/(?:^|:|,)(?:\s*\[)+/g, "")) ) {
+
+
+
+			// Try to use the native JSON parser first
+
+			return window.JSON && window.JSON.parse ?
+
+				window.JSON.parse( data ) :
+
+				(new Function("return " + data))();
+
+
+
+		} else {
+
+			jsPublic.error( "Invalid JSON: " + data );
+
+		}
+
+	}
+}
+
+var jsPublic={
+	trim:function(data){
+		if ( typeof data !== "string" || !data ) {
+
+				return null;
+
+			}
+		return data.replace(/^\s+|\s+$/g,"");
+	},
+	error:function(data){
+		throw new Error("error");
 	}
 }
