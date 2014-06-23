@@ -68,6 +68,14 @@ function clickParseJson(){
    var jsObject=jsonTools.parse(jsonString);
    console.info(jsObject);
 }
+
+function jqueryParseJson(){
+   var jsonString=document.getElementById("textJSON").value;
+   var jsObject=jsonTools.parse_reference(jsonString);
+   debugger
+   console.info(jsObject);
+}
+
 </script>
 
 
@@ -79,4 +87,5 @@ function clickParseJson(){
   <div>
   <input type="button" value="jsTools.testJson" onclick="clickParseJson();" />
   <input type="button" id="clickBtn" value="testJson" onclick="clickJsonButton()" />
+  <input type="button" id="jquery_core_parse_json" value="JQ_Parse_Json" onclick="jqueryParseJson();" />
 </form>
