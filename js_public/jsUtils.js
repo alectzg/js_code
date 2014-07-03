@@ -410,7 +410,46 @@ var __dateTools = {
         countDays += _date;
         countDays = countDays + dotDate.getDay();
         return Math.ceil(countDays / 7);
-    }
+    },
+	__calTime:function(firstArg,secondArg){
+    var firstYear=firstArg.getYear();
+	var secondYear=secondArg.getYear();
+	var secondMonth=secondArg.getMonth();
+	var firstMonth=firstArg.getMonth();
+	var _diff_days=0;
+	for(;firstYear<secondYear;firstYear++){
+	    if(firstYear%100>0&&firstYear%4==0)
+			_diff_days=_diff_days+366;
+		else
+			_diff_days=_diff_days+366;
+	}
+    _diff_days=_diff_days+this.__calDays(firstArg,secondArg);
+    var _diff_Hours=_diff_days*24+(secondArg.getHours()-firstArg.getHours());
+	var _diff_mins=0;
+		_diff_mins=secondArg.getMinutes()-firstArg.getMinutes();
+	if (_diff_mins<0){
+	    _diff_Hours=_diff_Hours-1;
+		_diff_mins=_diff_mins+60;
+	}
+	var retHours=""+_diff_Hours;
+	if(!/.*?\d{2}$/.test(retHours)){
+		retHours=retHours.replace(/^(-?)(.*)$/,"$100$2").replace(/^(-?)\d*(\d{2})$/,"$1$2");
+	}
+    return retHours+":"+("00"+_diff_mins).replace(/^.*?(\d{2})$/,"$1");
+  },
+  __calDays:function(firstDate,secondDate){
+	var firstMonth=firstDate.getMonth();
+	var secondMonth=secondDate.getMonth();
+	var curYear=secondDate.getYear();
+	var month_days=[31,28,31,30,31,30,31,31,30,31,30,31];
+    if(curYear%100>0&&curYear%4==0)
+	   month_days[1]=29;
+	var retDays=0;
+	for(var i=firstMonth;i<secondMonth;i++){
+	    retDays=retDays+month_days[i];
+	}
+	return retDays+(secondDate.getDate()-firstDate.getDate());
+  }
 };
 
 var __pageTools = {
